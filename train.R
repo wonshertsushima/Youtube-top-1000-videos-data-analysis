@@ -64,14 +64,21 @@ predictions <- final_fit %>%
   bind_cols(video_test)
 
 
-print("--- THE OPTIMAL K ---")
+
 print(best_k)
 
-print("--- CONFUSION MATRIX ---")
 predictions %>% conf_mat(truth = is_viral, estimate = .pred_class)
 
-print("--- FINAL ACCURACY ---")
 predictions %>% accuracy(truth = is_viral, estimate = .pred_class)
+
+cm <- predictions %>% 
+  conf_mat(truth = is_viral, estimate = .pred_class)
+
+metrics_summary <- summary(cm) %>%
+  filter(.metric %in% c("accuracy", "precision", "recall", "spec"))
+
+print("--- FINAL RESEARCH METRICS ---")
+print(metrics_summary)
 
 
 simulation_results <- final_fit %>%
